@@ -5,6 +5,11 @@ nbproject/
 error_log
 *.log
 
+# Environment files and secrets
+.env
+*.env
+.env.*
+
 # Local backups and credentials
 application/config/database.backup.php
 *.backup.*
