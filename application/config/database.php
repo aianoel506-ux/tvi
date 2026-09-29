@@ -1,45 +1,45 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-$active_group               = 'tvi';
+$active_group               = getenv('CI_DB_GROUP') ?: 'tvi';
 $active_group_audit         = 'audit';
-$connect                    = 'dev';
+$connect                    = getenv('CI_CONNECT') ?: 'online';
 
 if( $connect == 'dev' ) {
     // LOCALHOST
-    $host_server            = 'localhost';
-    $host_user              = 'root';
-    $host_db                = 'tvi_erp';
-    $host_pass              = '';
+    $host_server            = getenv('DB_HOST') ?: 'localhost';
+    $host_user              = getenv('DB_USER') ?: 'root';
+    $host_db                = getenv('DB_NAME') ?: 'tvi_erp';
+    $host_pass              = getenv('DB_PASS') ?: '';
 
-    $audit_server           = 'localhost';
-    $audit_user             = 'root';
-    $audit_db               = 'tvi_erp_audit';
-    $audit_pass             = '';
+    $audit_server           = getenv('AUDIT_DB_HOST') ?: 'localhost';
+    $audit_user             = getenv('AUDIT_DB_USER') ?: 'root';
+    $audit_db               = getenv('AUDIT_DB_NAME') ?: 'tvi_erp_audit';
+    $audit_pass             = getenv('AUDIT_DB_PASS') ?: '';
 
 } else if( $connect == 'online' ) {
-    // GoDaddy / Staging
-    $host_server            = 'localhost';
-    $host_user              = 'your_db_user';
-    $host_db                = 'your_db_name';
-    $host_pass              = 'your_db_password';
+    // GoDaddy / Cloud / Vercel (Configurable via Environment Variables)
+    $host_server            = getenv('DB_HOST') ?: 'localhost';
+    $host_user              = getenv('DB_USER') ?: 'uub4rmw23inpzxn9_pae_root';
+    $host_db                = getenv('DB_NAME') ?: 'uub4rmw23inpzxn9_tvi_erp';
+    $host_pass              = getenv('DB_PASS') ?: '';
 
-    $audit_server           = 'localhost';
-    $audit_user             = 'your_audit_user';
-    $audit_db               = 'your_audit_db';
-    $audit_pass             = 'your_audit_password';
+    $audit_server           = getenv('AUDIT_DB_HOST') ?: (getenv('DB_HOST') ?: 'localhost');
+    $audit_user             = getenv('AUDIT_DB_USER') ?: (getenv('DB_USER') ?: 'uub4rmw23inpzxn9_pae_root');
+    $audit_db               = getenv('AUDIT_DB_NAME') ?: 'uub4rmw23inpzxn9_tvi_erp_audit';
+    $audit_pass             = getenv('AUDIT_DB_PASS') ?: (getenv('DB_PASS') ?: '');
 
 } else {
-    // PRODUCTION SERVER
-    $host_server            = '127.0.0.1';
-    $host_user              = 'your_db_user';
-    $host_db                = 'your_db_name';
-    $host_pass              = 'your_db_password';
+    // PAE SERVER
+    $host_server            = getenv('DB_HOST') ?: '172.20.224.5';
+    $host_user              = getenv('DB_USER') ?: 'lucky';
+    $host_db                = getenv('DB_NAME') ?: 'pae';
+    $host_pass              = getenv('DB_PASS') ?: '';
 
-    $audit_server           = '127.0.0.1';
-    $audit_user             = 'your_audit_user';
-    $audit_db               = 'your_audit_db';
-    $audit_pass             = 'your_audit_password';
+    $audit_server           = getenv('AUDIT_DB_HOST') ?: '172.20.224.5';
+    $audit_user             = getenv('AUDIT_DB_USER') ?: 'lucky';
+    $audit_db               = getenv('AUDIT_DB_NAME') ?: 'pae_audit';
+    $audit_pass             = getenv('AUDIT_DB_PASS') ?: '';
 }
 
 
@@ -51,16 +51,16 @@ $db[$active_group]['sysaudit'] = $active_group_audit;
 
 
 // ###################################################
-// ############### ERP LOCAL #########################
+// ############### ERP ###############################
 // ###################################################
 $db['tvi']['hostname'] = $host_server;
 $db['tvi']['username'] = $host_user;
 $db['tvi']['password'] = $host_pass;
 $db['tvi']['database'] = $host_db;
-$db['tvi']['port']     = '3306';
+$db['tvi']['port']     = getenv('DB_PORT') ?: '3306';
 $db['tvi']['dbdriver'] = 'mysqli';
 $db['tvi']['dbprefix'] = '';
-$db['tvi']['pconnect'] = TRUE;
+$db['tvi']['pconnect'] = FALSE;
 $db['tvi']['db_debug'] = TRUE;
 $db['tvi']['cache_on'] = FALSE;
 $db['tvi']['cachedir'] = '';
@@ -71,12 +71,13 @@ $db['tvi']['autoinit'] = TRUE;
 $db['tvi']['stricton'] = FALSE;
 
 // ###################################################
-// ############### ERP AUDIT LOCAL ###################
+// ############### ERP AUDIT #########################
 // ###################################################
 $db['audit']['hostname'] = $audit_server;
 $db['audit']['username'] = $audit_user;
 $db['audit']['password'] = $audit_pass;
 $db['audit']['database'] = $audit_db;
+$db['audit']['port']     = getenv('AUDIT_DB_PORT') ?: '3306';
 $db['audit']['dbdriver'] = "mysqli";
 $db['audit']['dbprefix'] = "";
 $db['audit']['pconnect'] = FALSE;
