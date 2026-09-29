@@ -1,34 +1,10 @@
 <?php
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
-error_reporting(E_ALL);
-
-register_shutdown_function(function() {
-    $error = error_get_last();
-    if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
-        http_response_code(200);
-        header('Content-Type: text/plain');
-        echo "=== TVI PHP ERROR ON VERCEL ===\n";
-        echo "Type: " . $error['type'] . "\n";
-        echo "Message: " . $error['message'] . "\n";
-        echo "File: " . $error['file'] . "\n";
-        echo "Line: " . $error['line'] . "\n";
-    }
-});
-
-set_exception_handler(function($e) {
-    http_response_code(200);
-    header('Content-Type: text/plain');
-    echo "=== TVI UNCAUGHT EXCEPTION ===\n";
-    echo $e->getMessage() . "\n" . $e->getTraceAsString();
-});
-
-// Set script environment variables for CodeIgniter router
-$_SERVER['SCRIPT_FILENAME'] = dirname(__DIR__) . '/index.php';
-$_SERVER['SCRIPT_NAME']     = '/index.php';
-
-// Change current working directory to the project root
-chdir(dirname(__DIR__));
-
-// Bootstrap CodeIgniter
-require dirname(__DIR__) . '/index.php';
+header('Content-Type: text/plain');
+echo "PHP Version: " . phpversion() . "\n";
+echo "Current Dir: " . getcwd() . "\n";
+echo "Dirname __DIR__: " . dirname(__DIR__) . "\n";
+echo "Root index exists? " . (file_exists(dirname(__DIR__) . '/index.php') ? 'YES' : 'NO') . "\n";
+echo "System dir exists? " . (is_dir(dirname(__DIR__) . '/system') ? 'YES' : 'NO') . "\n";
+echo "Application dir exists? " . (is_dir(dirname(__DIR__) . '/application') ? 'YES' : 'NO') . "\n";
+echo "Files in parent: " . implode(', ', @scandir(dirname(__DIR__)) ?: ['none']) . "\n";
+echo "DB_HOST env: " . (getenv('DB_HOST') ?: 'not set') . "\n";
