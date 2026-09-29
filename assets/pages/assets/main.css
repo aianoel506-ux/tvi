@@ -1,0 +1,17 @@
+.asset-pic{
+    display: inline-block;
+}
+.asset-pic .img-main{
+    width: 100%;
+}
+.asset-pic .img-main img {
+    width: 100%;
+}
+.asset-pic .img-subs {
+    margin-top: 5px;
+    width: 100%;
+}
+.asset-pic .img-subs img {
+    width: 24%;
+    margin-right: 1%;
+}

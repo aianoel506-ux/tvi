@@ -1,0 +1,8 @@
+
+
+table.dataTable span.highlight {
+  background-color: rgba(253,143,34,0.80);
+  font-weight: bold;
+  color: #fff;
+}
+

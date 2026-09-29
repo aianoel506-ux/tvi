@@ -1,0 +1,31 @@
+body{
+    margin: 0px 0px;
+    padding: 0px 0px;
+    background: #ccc;
+}
+
+.front-end-login {
+    width: 40%;
+    margin: auto 30%;
+    margin-top: 10%;
+    background: #fff;
+    -webkit-box-shadow: rgba(0,0,0,0.50) 0px 5px 30px;
+       -moz-box-shadow: rgba(0,0,0,0.50) 0px 5px 30px;
+         -o-box-shadow: rgba(0,0,0,0.50) 0px 5px 30px;
+                shadow: rgba(0,0,0,0.50) 0px 5px 30px;
+}
+
+.front-end-login .form-without-legend .login-content {
+    padding: 20px 20px;
+    display: inline-block;
+    width: 100%;
+}
+.front-end-login .form-without-legend h4.login-header {
+    background: #ef582d url('../../../global/img/logo/peco-nav-logo-orange-border.png') no-repeat left center;
+    padding: 25px 20px;
+    color: #fff;
+    display: inline-block;
+    width: 100%;
+    margin: 0px 0px;
+}
+

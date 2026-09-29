@@ -1,0 +1,325 @@
+<?php
+/**
+ * Tier 1 Payroll Report Diagnostic Tool
+ * Access this file via: yourdomain.com/payroll/diagnostic_tier1
+ * Or run via CLI: php diagnostic_tier1.php
+ */
+
+require_once dirname(__DIR__) . '/application/config/constants.php';
+require_once BASEPATH . '/core/Model.php';
+require_once APPPATH . '/models/Model_payroll.php';
+
+class Diagnostic_Tier1 {
+
+    private $db;
+    private $model_payroll;
+
+    public function __construct() {
+        $ci =& get_instance();
+        $ci->load->database();
+        $this->db = $ci->db;
+        $this->load_model();
+    }
+
+    private function load_model() {
+        $this->model_payroll = new Model_Payroll();
+    }
+
+    public function run_diagnostic($year = null, $month = null, $paytype = null) {
+        $year = $year ?: date('Y');
+        $month = $month ?: date('m');
+        $paytype = $paytype ?: 1;
+
+        $results = array(
+            'timestamp' => date('Y-m-d H:i:s'),
+            'parameters' => array(
+                'year' => $year,
+                'month' => $month,
+                'paytype' => $paytype
+            ),
+            'checks' => array()
+        );
+
+        $results['checks']['tier1_employees'] = $this->check_tier1_employees();
+        $results['checks']['payroll_reports_group'] = $this->check_payroll_reports_group($year, $month, $paytype);
+        $results['checks']['payroll_reports_main'] = $this->check_payroll_reports_main($year, $month, $paytype);
+        $results['checks']['payroll_transactions'] = $this->check_payroll_transactions($year, $month, $paytype);
+        $results['checks']['summary'] = $this->get_summary($year, $month, $paytype);
+
+        return $results;
+    }
+
+    private function check_tier1_employees() {
+        $sql = $this->db->select("pem.sysid, pem.empid, p.lastname, p.firstname, pemp.payclass_id, pemjc.jobcatid, pem.status")
+            ->from("prime_employee_main pem")
+            ->join("person p", "p.sysid = pem.personid", "left")
+            ->join("prime_employee_main_payclass pemp", "pemp.emp_id = pem.sysid AND pemp.status = 1", "left")
+            ->join("prime_employee_main_job_category pemjc", "pemjc.empid = pem.sysid AND pemjc.status = 1", "left")
+            ->where("pemp.payclass_id", 3077)
+            ->where_in("pemjc.jobcatid", array(157, 160))
+            ->get();
+
+        return array(
+            'count' => $sql->num_rows(),
+            'employees' => $sql->result()
+        );
+    }
+
+    private function check_payroll_reports_group($year, $month, $paytype) {
+        $sql = $this->db->select("prg.sysid, prg.years, prg.months, prg.payclass, prg.paytype, prg.status")
+            ->from("payroll_reports_group prg")
+            ->where("prg.payclass", 3077)
+            ->where("prg.years", $year)
+            ->where("prg.months", $month)
+            ->get();
+
+        $result = array(
+            'count' => $sql->num_rows(),
+            'records' => $sql->result()
+        );
+
+        if ($sql->num_rows() > 0) {
+            $row = $sql->row();
+            $result['has_pending'] = ($row->status == 1) ? true : false;
+            $result['has_approved'] = ($row->status == 301) ? true : false;
+        }
+
+        return $result;
+    }
+
+    private function check_payroll_reports_main($year, $month, $paytype) {
+        $sql = $this->db->select("prm.sysid, prm.groupid, prm.empid, prm.ccid, prm.basic, prm.deductions, prm.earnings, prm.tax, prm.net")
+            ->from("payroll_reports_main prm")
+            ->join("payroll_reports_group prg", "prg.sysid = prm.groupid", "inner")
+            ->where("prg.payclass", 3077)
+            ->where("prg.years", $year)
+            ->where("prg.months", $month)
+            ->get();
+
+        return array(
+            'count' => $sql->num_rows(),
+            'records' => $sql->result()
+        );
+    }
+
+    private function check_payroll_transactions($year, $month, $paytype) {
+        $sql = $this->db->select("pt.sysid, pt.empid, pt.typesid, pt.months, pt.years, pt.paytype, pt.payspec, pt.amt, pt.status, ptp.names as transaction_type")
+            ->from("payroll_transactions pt")
+            ->join("prime_types_parameter ptp", "ptp.sysid = pt.typesid", "left")
+            ->where("pt.payclass", 3077)
+            ->where("pt.years", $year)
+            ->where("pt.months", $month)
+            ->where("pt.status", 1)
+            ->limit(20)
+            ->get();
+
+        return array(
+            'count' => $sql->num_rows(),
+            'records' => $sql->result()
+        );
+    }
+
+    private function get_summary($year, $month, $paytype) {
+        $sql = $this->db->select("
+                COUNT(DISTINCT prg.sysid) as total_groups,
+                COUNT(DISTINCT prm.sysid) as total_employees,
+                SUM(prm.net) as total_net,
+                SUM(prm.basic) as total_basic,
+                SUM(prm.earnings) as total_earnings,
+                SUM(prm.deductions) as total_deductions,
+                SUM(prm.tax) as total_tax
+            ")
+            ->from("payroll_reports_group prg")
+            ->join("payroll_reports_main prm", "prm.groupid = prg.sysid", "left")
+            ->where("prg.payclass", 3077)
+            ->where("prg.years", $year)
+            ->where("prg.months", $month)
+            ->get()->row();
+
+        return (array) $sql;
+    }
+
+    public function has_payroll_report($year, $month, $paytype = 1) {
+        $sql = $this->db->select("sysid")
+            ->from("payroll_reports_group")
+            ->where("payclass", 3077)
+            ->where("years", $year)
+            ->where("months", $month)
+            ->where("paytype", $paytype)
+            ->where_in("status", array(1, 301))
+            ->get();
+
+        return ($sql->num_rows() > 0) ? true : false;
+    }
+
+    public function get_payroll_status($year, $month, $paytype = 1) {
+        $sql = $this->db->select("sysid, status, payclass, paytype, years, months")
+            ->from("payroll_reports_group")
+            ->where("payclass", 3077)
+            ->where("years", $year)
+            ->where("months", $month)
+            ->where("paytype", $paytype)
+            ->get()->row();
+
+        if (!$sql) {
+            return array(
+                'exists' => false,
+                'status' => null,
+                'message' => 'No payroll report found for Tier 1'
+            );
+        }
+
+        $status_labels = array(
+            1 => 'Pending',
+            301 => 'Approved',
+            302 => 'Disapproved'
+        );
+
+        return array(
+            'exists' => true,
+            'sysid' => $sql->sysid,
+            'status' => $sql->status,
+            'status_label' => isset($status_labels[$sql->status]) ? $status_labels[$sql->status] : 'Unknown',
+            'message' => 'Payroll report found - Status: ' . (isset($status_labels[$sql->status]) ? $status_labels[$sql->status] : 'Unknown')
+        );
+    }
+
+    public function render_html($results) {
+        $html = '<!DOCTYPE html>
+<html>
+<head>
+    <title>Tier 1 Payroll Diagnostic</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding: 20px; background: #f5f5f5; }
+        .panel { margin-bottom: 20px; }
+        .status-ok { color: #5cb85c; font-weight: bold; }
+        .status-warning { color: #f0ad4e; font-weight: bold; }
+        .status-error { color: #d9534f; font-weight: bold; }
+        .json-result { background: #272b30; color: #fff; padding: 15px; border-radius: 5px; }
+        table { font-size: 12px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2><span class="glyphicon glyphicon-file"></span> Tier 1 Payroll Report Diagnostic</h2>
+    <p class="text-muted">Generated: ' . $results['timestamp'] . '</p>
+    <p><strong>Parameters:</strong> Year=' . $results['parameters']['year'] . ', Month=' . $results['parameters']['month'] . ', Paytype=' . $results['parameters']['paytype'] . '</p>';
+
+        $checks = $results['checks'];
+
+        $html .= '<div class="panel panel-default">
+        <div class="panel-heading">Tier 1 Employees in Master Tables</div>
+        <div class="panel-body">';
+
+        if ($checks['tier1_employees']['count'] > 0) {
+            $html .= '<span class="status-ok">Found ' . $checks['tier1_employees']['count'] . ' Tier 1 employees</span>';
+            $html .= '<table class="table table-condensed table-striped">
+            <thead><tr><th>SysID</th><th>Employee ID</th><th>Name</th><th>Payclass</th><th>JobCat</th><th>Status</th></tr></thead><tbody>';
+            foreach ($checks['tier1_employees']['employees'] as $emp) {
+                $html .= '<tr>
+                    <td>' . $emp->sysid . '</td>
+                    <td>' . $emp->empid . '</td>
+                    <td>' . $emp->lastname . ', ' . $emp->firstname . '</td>
+                    <td>' . $emp->payclass_id . '</td>
+                    <td>' . $emp->jobcatid . '</td>
+                    <td>' . ($emp->status == 1 ? 'Active' : 'Inactive') . '</td>
+                </tr>';
+            }
+            $html .= '</tbody></table>';
+        } else {
+            $html .= '<span class="status-error">No Tier 1 employees found!</span>';
+        }
+
+        $html .= '</div></div>';
+
+        $html .= '<div class="panel panel-default">
+        <div class="panel-heading">Payroll Reports Group</div>
+        <div class="panel-body">';
+
+        if ($checks['payroll_reports_group']['count'] > 0) {
+            $html .= '<span class="status-ok">Found ' . $checks['payroll_reports_group']['count'] . ' report group(s)</span>';
+            if (isset($checks['payroll_reports_group']['has_pending'])) {
+                $html .= ' | <span class="status-warning">Pending: ' . ($checks['payroll_reports_group']['has_pending'] ? 'Yes' : 'No') . '</span>';
+            }
+            if (isset($checks['payroll_reports_group']['has_approved'])) {
+                $html .= ' | <span class="status-ok">Approved: ' . ($checks['payroll_reports_group']['has_approved'] ? 'Yes' : 'No') . '</span>';
+            }
+            $html .= '<table class="table table-condensed table-striped">
+            <thead><tr><th>SysID</th><th>Year</th><th>Month</th><th>Payclass</th><th>Paytype</th><th>Status</th></tr></thead><tbody>';
+            foreach ($checks['payroll_reports_group']['records'] as $rec) {
+                $status_class = ($rec->status == 301) ? 'status-ok' : (($rec->status == 1) ? 'status-warning' : 'status-error');
+                $html .= '<tr>
+                    <td>' . $rec->sysid . '</td>
+                    <td>' . $rec->years . '</td>
+                    <td>' . $rec->months . '</td>
+                    <td>' . $rec->payclass . '</td>
+                    <td>' . $rec->paytype . '</td>
+                    <td class="' . $status_class . '">' . $rec->status . '</td>
+                </tr>';
+            }
+            $html .= '</tbody></table>';
+        } else {
+            $html .= '<span class="status-error">No payroll reports group found for Tier 1!</span>';
+        }
+
+        $html .= '</div></div>';
+
+        $html .= '<div class="panel panel-default">
+        <div class="panel-heading">Payroll Reports Main (Individual Records)</div>
+        <div class="panel-body">';
+
+        if ($checks['payroll_reports_main']['count'] > 0) {
+            $html .= '<span class="status-ok">Found ' . $checks['payroll_reports_main']['count'] . ' employee payroll record(s)</span>';
+        } else {
+            $html .= '<span class="status-error">No employee payroll records found!</span>';
+        }
+
+        $html .= '</div></div>';
+
+        $html .= '<div class="panel panel-default">
+        <div class="panel-heading">Summary</div>
+        <div class="panel-body">
+        <table class="table table-bordered">
+        <tr><th>Total Groups</th><td>' . $checks['summary']['total_groups'] . '</td></tr>
+        <tr><th>Total Employees</th><td>' . $checks['summary']['total_employees'] . '</td></tr>
+        <tr><th>Total Basic</th><td>' . number_format($checks['summary']['total_basic'], 2) . '</td></tr>
+        <tr><th>Total Earnings</th><td>' . number_format($checks['summary']['total_earnings'], 2) . '</td></tr>
+        <tr><th>Total Deductions</th><td>' . number_format($checks['summary']['total_deductions'], 2) . '</td></tr>
+        <tr><th>Total Tax</th><td>' . number_format($checks['summary']['total_tax'], 2) . '</td></tr>
+        <tr><th>Total Net</th><td><strong>' . number_format($checks['summary']['total_net'], 2) . '</strong></td></tr>
+        </table>
+        </div></div>';
+
+        $summary_status = $checks['payroll_reports_group']['count'] > 0 ? 'status-ok' : 'status-error';
+        $summary_msg = $checks['payroll_reports_group']['count'] > 0 ? 'Tier 1 Payroll Report EXISTS' : 'Tier 1 Payroll Report NOT FOUND';
+
+        $html .= '<div class="panel panel-primary">
+        <div class="panel-heading">Final Status</div>
+        <div class="panel-body">
+            <h3 class="' . $summary_status . '">' . $summary_msg . '</h3>
+        </div>
+        </div>';
+
+        $html .= '<div class="panel panel-default">
+        <div class="panel-heading">Raw JSON Output</div>
+        <div class="panel-body">
+            <pre class="json-result">' . json_encode($results, JSON_PRETTY_PRINT) . '</pre>
+        </div>
+        </div>';
+
+        $html .= '</div></body></html>';
+
+        return $html;
+    }
+}
+
+if (basename($_SERVER['PHP_SELF']) == 'diagnostic_tier1.php') {
+    $year = isset($_GET['year']) ? $_GET['year'] : date('Y');
+    $month = isset($_GET['month']) ? $_GET['month'] : date('m');
+    $paytype = isset($_GET['paytype']) ? $_GET['paytype'] : 1;
+
+    $diagnostic = new Diagnostic_Tier1();
+    $results = $diagnostic->run_diagnostic($year, $month, $paytype);
+    echo $diagnostic->render_html($results);
+}

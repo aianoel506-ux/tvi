@@ -1,0 +1,20 @@
+* {
+  font-family: arial;
+}
+
+.faq-categories  {
+  position: fixed;
+  top: 100px;
+  left: 270px;
+  width: 300px;
+}
+
+.panel-group li {
+  list-style: none;
+}
+.panel-group li .panel-heading {
+  padding: 10px 15px !important;
+}
+.panel-group li .panel-collapse {
+  padding: 10px 15px !important;
+}

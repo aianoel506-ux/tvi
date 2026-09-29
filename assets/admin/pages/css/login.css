@@ -1,0 +1,215 @@
+body{
+    background: #fff !important;
+    background: url(../../../../assets/global/img/bg/login_bg.png) no-repeat  !important;
+    -webkit-background-size: cover !important;
+    -moz-background-size: cover !important;
+    -o-background-size: cover !important;
+    background-size: cover !important;
+}
+.wrapper{
+    background: #fff !important;
+    position: fixed !important;
+    top: 0px !important;
+    bottom: 0px !important;
+    width: 100%;
+}
+
+.bulletin-title {
+    background: #ff6400;
+    height: 40px;
+    padding: 10px 10px;
+}
+
+.login-box-bulletin {
+    background: rgba(255,255,255,0.25);
+    height: 100%;
+    width: 70%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+
+.login-box-body{
+    background: rgba(251,245,246,0.95);
+    box-shadow: rgba(51,51,51,0.5) 0px 30px 60px 5px;
+    height: 100%;
+    width: 30%;
+    padding: 20px 20px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
+.featured-news {
+    display: inline-block !important;
+    height: 70% !important;
+    width: 100%;
+    position: relative;
+}
+
+.featured-news .news-content,
+.featured-news .content-slider,
+.featured-news .slide,
+.featured-news .carousel-inner {
+    display: inline-block;
+    height: 100% !important;
+    width: 100% !important;
+}
+
+.featured-news .news-content {
+    background: url(../../../../assets/global/img/default-ads.png) no-repeat center center;
+    background-size: 100% 100%;
+}
+
+.featured-news .news-title {
+    padding: 15px 15px;
+    font-size: 18px;
+    color: #FFF;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    left: 0px;
+    z-index: 100;
+    text-align: right;
+}
+.flash-news {
+    background: url(../../../../assets/global/img/peco-footer-bg-abs.png) no-repeat center center;
+    background-size: 100% 100%;
+    display: inline-block !important;
+    height: 30% !important;
+    width: 100%;
+}
+.bulletin-list {
+    display: inline-block !important;
+    height: 100% !important;
+    width: 30%;
+    margin: 0px 0px;
+    position: absolute;
+    left: 0px;
+    top: 40px;
+}
+.bulletin-details {
+    display: inline-block !important;
+    height: 100% !important;
+    width: 70%;
+    margin: 0px 0px;
+    position: absolute;
+    left: 30%;
+    top: 40px;
+}
+
+.bulletin-details .featured-news {
+    border-bottom: rgba(53,53,53,0.20) solid 1px;
+}
+
+
+.login-logo{
+    padding: 20px 20px;
+    text-align: center;
+}
+@media (min-width: 1024px) {
+
+    .wrapper{
+        background-size: 100% 100% !important;
+        position: fixed !important;
+        top: 0px !important;
+        bottom: 0px !important;
+        width: 100%;
+        background: transparent !important;
+    }
+
+}
+@media (max-width: 1360px) {
+    .login-box-bulletin .list-thumb {
+        display: none;
+    }
+    .login-box-bulletin .list-datetime,
+    .login-box-bulletin .list-item-content {
+        margin-left: 0px !important;
+        padding-left: 0px !important;
+    }
+}
+
+@media (max-width: 1024px) {
+    .login-box-bulletin {
+        display: none;
+    }
+
+
+    .login-box-body {
+        width: 80%;
+        padding-left: 50px;
+        padding-right: 50px;
+        margin-right: 10%;
+        margin-left: 10%;
+    }
+
+    .footer-copy-right {
+        width: 100%;
+        position: absolute;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+    }
+}
+
+@media (max-width: 720px) {
+    .login-box-body {
+        width: 100%;
+        padding-left: 50px;
+        padding-right: 50px;
+        margin-right: 0;
+        margin-left: 0;
+    }
+}
+.footer-copy-right{
+    font-size: 10px;
+    color: #333;
+    padding-top: 20px;
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+}
+
+.footer-copy-right.margin-top-20{
+    margin-top: 20px;
+}
+
+.form-without-legend .form-group,
+.form-without-legend .form-md-line-input{
+    margin-bottom: 5px !important;
+    margin-top: 0px !important;
+}
+
+.input-icon.right .twitter-typeahead .form-control {
+    padding-right: 35px !important;
+}
+.input-icon.left .twitter-typeahead .form-control {
+    padding-left: 35px !important;
+}
+
+.form-without-legend .input-icon .fa {
+    color: #ff5100 !important;
+    opacity: 0.3;
+    -moz-opacity: 0.3;
+}
+
+.form-without-legend .input-icon {
+    margin-bottom: 0px !important;
+    margin-top: 0px !important;
+    padding-bottom: 0px !important;
+    padding-top: 0px !important;
+    height: 30px !important;
+    display: inline-block;
+    width: 100% !important;
+}
+
+.form-without-legend .form-controller{
+    margin-top: 30px;
+}
+
+.login-logo {
+
+}

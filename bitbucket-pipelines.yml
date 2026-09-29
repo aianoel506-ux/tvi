@@ -1,0 +1,25 @@
+# Auto deploy staging to staging
+# Manual deploy master to production
+image: wagnerstephan/bitbucket-git-ftp
+
+pipelines:
+  custom:
+    init:
+      - step:
+          script:
+            - echo "Initailizing Production"
+      - step:
+          name: Initializing Production
+          script:
+            - apt-get update -qq && apt-get install -y -qq git-ftp
+            - git ftp init --user $FTP_USERNAME --passwd $FTP_PASSWORD ftp://$FTP_HOST
+  branches:
+    master:
+      - step:
+          script:
+            - echo "Deploy to Production"
+      - step:
+          name: Deploy to Production
+          script:
+            - apt-get update -qq && apt-get install -y -qq git-ftp
+            - git ftp push --user $FTP_USERNAME --passwd $FTP_PASSWORD ftp://$FTP_HOST

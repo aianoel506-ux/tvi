@@ -1,0 +1,83 @@
+var BOS = function() {
+	// INITIALIZE HIGHLIGHTS SEARCH IN TABLE
+	PECO.getHighlightsPlugin();
+	
+	var tbl_capex_main = $('#tbl_capex_main');
+	
+	var init_ccid_budget = function(){
+		$.ajax({
+			url: PECO.base_url()+'bos/getccidbudget';
+			type: 'POST',
+			dataType: 'json',
+		}).done(function(data) {
+			if(data.qry==true) {
+				
+			} else {
+				$('#budget_row_main').html('<span class="alert alert-warning"><b>Empty: </b> There is no budget for this year yet!</span>');	
+			}
+		}).fail(function() {
+			PECO.phpError();
+		});
+	};
+	var init_tbl_capex_main = function () {
+		$.ajax({
+			url: PECO.base_url() + 'bos/trnbudgetcreation',
+			type: "POST",
+			dataType: 'json',
+			
+		}).done(function(data) {
+			tbl_capex_main.dataTable().empty();
+			var dt = tbl_capex_main.dataTable({
+				bDestroy: true,
+				bPaginate: false,
+				bFilter: false,
+				bInfo: false,
+				bStateSave: true,
+				bProcessing: true,
+				aaData: data['data'],
+				language: {
+				  "emptyTable": '<h5><i class="fa fa-search text-info"></i> No data found!</h5>'
+				},
+				aoColumns: [
+					{"data": "expand"},
+					{"data": "num"},
+					{"data": "ccid"},
+					{"data": "btype"},
+					{"data": "year"},
+					{"data": "control", sClass: 'details-control'},
+				],
+				"columnDefs": [
+					{"orderable": false, "targets": [-1, 0, 1]}
+				],
+				"order": [
+					[1, 'asc']
+				],
+				"lengthMenu": [
+					[5, 15, 20, -1],
+					[5, 15, 20, "All"] // change per page values here
+				],
+				fnRowCallback: function (nRow, data, iDisplayIndex, iDisplayIndexFull) {
+					//var this_index = this.fnGetPosition( nRow );
+					
+					$(nRow).after('<tr><td>This is a new tr</td></tr>');
+					
+				},
+				// set the initial value
+				pageLength: 10,
+				fnDrawCallback: function () {
+					console.log('Table drawn..');
+				}
+			});
+			
+		}).fail(function() {
+			PECO.phpError();
+		});
+	};
+	return {
+		capex: function() {
+			init_ccid_budget();
+			//init_tbl_capex_main();
+		}
+	};
+
+}();

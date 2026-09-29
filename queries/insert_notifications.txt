@@ -1,0 +1,5 @@
+TRUNCATE transaction_request_main;
+-- INSERT DATA FOR APPROVAL
+INSERT INTO `peco_sys`.`transaction_request_main` (`codes`, `descriptions`, `validations`, `moduleid`, `stagesid`, `arraydata`, `datecreated`, `createdby`, `status`) VALUES ('TRN-00032', 'TESTING 1', NULL, '3', '2', 'TESTING', '2015-09-20 18:02:35', '2', '1');
+-- INSERT DATA THAT IS APPROVED
+INSERT INTO `peco_sys`.`transaction_request_main` (`codes`, `descriptions`, `validations`, `moduleid`, `stagesid`, `arraydata`, `datecreated`, `createdby`, `status`) VALUES ('TRN-00034', 'TESTING 3', NULL, '3', '4', 'TESTING', '2015-09-20 19:05:04', '4', '1');

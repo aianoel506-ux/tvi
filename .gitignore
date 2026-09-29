@@ -1,0 +1,22 @@
+# NetBeans project files
+nbproject/
+
+# Error logs
+error_log
+*.log
+
+# Local backups and credentials
+application/config/database.backup.php
+*.backup.*
+*.bak
+
+# Sensitive uploaded files (employee payslips, temp files)
+uploads/employee/payslips/*
+uploads/temp/*
+!uploads/employee/payslips/.gitkeep
+!uploads/temp/.gitkeep
+
+# Environment and OS files
+.DS_Store
+Thumbs.db
+desktop.ini

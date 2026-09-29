@@ -1,0 +1,100 @@
+.pace {
+  -webkit-pointer-events: none;
+  pointer-events: none;
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+	z-index: 9999999;
+}
+
+.pace-inactive {
+    display: none;
+	z-index: 9999999;
+}
+.pace .pace-activity {
+  display: block;
+  position: fixed;
+  z-index: 30000;
+  top: 0;
+  right: 0;
+  width: 200px;
+  height: 200px;
+  background: rgba(255,0,0,0.5);
+  -webkit-transition: -webkit-transform 0.3s;
+  transition: transform 0.3s;
+  -webkit-transform: translateX(100%) translateY(-100%) rotate(45deg);
+  transform: translateX(100%) translateY(-100%) rotate(45deg);
+  pointer-events: none;
+	z-index: 9999999;
+}
+
+.pace.pace-active .pace-activity {
+  -webkit-transform: translateX(50%) translateY(-50%) rotate(45deg);
+  transform: translateX(50%) translateY(-50%) rotate(45deg);
+}
+
+.pace .pace-activity::before,
+.pace .pace-activity::after {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    display: block;
+    border: 5px solid #fff;
+    border-radius: 50%;
+    content: '';
+	z-index: 9999999;
+}
+
+.pace .pace-activity::before {
+	bottom: 20px;
+	margin-left: -20px;
+    width: 50px;
+    height: 50px;
+    border-right-color: rgba(0, 0, 0, .2);
+    border-left-color: rgba(0, 0, 0, .2);
+    -webkit-animation: pace-theme-corner-indicator-spin 3s linear infinite;
+    animation: pace-theme-corner-indicator-spin 3s linear infinite;
+    box-shadow: 0 0 5px 1px #F00, 0 0 5px 2px #F00;
+	z-index: 9999999;
+}
+
+.pace .pace-activity::after {
+	bottom: 28px;
+	margin-left: -13px;
+    width: 36px;
+    height: 36px;
+    border-top-color: rgba(0, 0, 0, .2);
+    border-bottom-color: rgba(0, 0, 0, .2);
+    -webkit-animation: pace-theme-corner-indicator-spin 1s linear infinite;
+    animation: pace-theme-corner-indicator-spin 1s linear infinite;
+    box-shadow: 0 0 5px 1px #F00, 0 0 5px 2px #F00;
+	z-index: 9999999;
+}
+
+.pace .pace-progress:after {
+  display: block;
+  position: fixed;
+  top: 35px;
+  right: 20px;
+  content: attr(data-progress-text);
+  font-family: "Helvetica Neue", sans-serif;
+  font-weight: 100;
+  font-size: 1.2rem;
+  line-height: 1;
+  text-align: right;
+  color: rgba(255,0,0,1);
+  text-shadow: rgba(255,0,0,1.6) 1px 1px 5px 2px;
+  z-index: 9999999;
+}
+
+@-webkit-keyframes pace-theme-corner-indicator-spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(359deg); }
+}
+@keyframes pace-theme-corner-indicator-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(359deg); }
+}

@@ -1,0 +1,22 @@
+SELECT 
+trn_rm.sysid,
+trn_rm.codes,
+trn_rm.descriptions, 
+trn_rm.datecreated, 
+trn_rm.createdby,
+pm_nav_m.`desc`,
+pt_flow_m.`desc`,
+pt_flow_ms.levels,
+pt_flow_mso.ownergroup AS 'STAGE GROUP OWNER',
+ps_users_m.firstname AS 'SPECIFIC STAGE OWNER',
+trn_rm.`status`
+FROM transaction_request_main AS trn_rm
+LEFT JOIN prime_module_navigations_main AS pm_nav_m ON pm_nav_m.sysid = trn_rm.moduleid
+LEFT JOIN prime_transaction_flow_main AS pt_flow_m ON pt_flow_m.moduleid = trn_rm.moduleid
+LEFT JOIN prime_transaction_flow_main_stages AS pt_flow_ms ON pt_flow_ms.sysid = trn_rm.stagesid
+LEFT JOIN prime_transaction_flow_main_stages_owners AS pt_flow_mso ON pt_flow_mso.levelid = pt_flow_ms.sysid
+LEFT JOIN prime_system_users_roles_main AS ps_users_rm ON ps_users_rm.sysid = pt_flow_mso.ownergroup
+LEFT JOIN prime_system_users AS ps_users_m ON ps_users_m.sysid = pt_flow_mso.ownerspecific
+WHERE 
+ps_users_rm.sysid = 2
+AND trn_rm.createdby != 2

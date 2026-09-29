@@ -1,0 +1,15 @@
+/* FOR ACTIVITIES */
+#trn-list tbody tr td.trn span.text-danger {
+    background: rgba(255, 0, 0, 0.1) !important;
+    margin-top: -5px;
+    margin-right: -5px;
+    padding: 2px 5px;
+    text-align: right;
+}
+
+#trn-list tbody tr td.trn span.text-success {
+    padding-top: 2px !important;
+    display: block;
+    margin-top: -1px;
+    border-top: 1px solid rgba(255, 0, 0, 0.1);
+}

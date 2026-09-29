@@ -1,0 +1,180 @@
+    body{
+        margin: 0px 0px;
+        padding: 0px 0px;
+        background: #fff !important;
+        min-height:  100%;
+
+    }
+    .rep-content {
+        padding: 10px 25px;
+        display: inline-block;
+        min-height: 800px;
+		position: relative;
+    }
+    .accountinfo{
+        width: 100%;
+        height: 50px;
+        display: inline-block;
+        margin-top: 20px;
+		font-size: 9px;
+    }
+    .accountdetails{
+        width: 100%;
+        height: 40px;
+        display: inline-block;
+        margin-top: 10px;
+		padding-top: 5px;
+		padding-left: 35px;
+		font-size: 10px;
+    }
+    .accountinfo .column-1, .accountinfo .column-2 {
+        width: 45%;
+        padding-left: 100px;
+        display: inline-block;
+        vertical-align: top;
+    }
+    .info-list{
+        display: inline-block;
+        width: 100%;
+    }
+    .gdlb {
+        width: 10%;
+        display: inline-block;
+    }
+    .servno {
+        width: 10%;
+        display: inline-block;
+    }
+    .mn {
+        width: 5%;
+        display: inline-block;
+    }
+	.billperiod {
+        width: 10%;
+        display: inline-block;
+    }
+    .moyr {
+        width: 16%;
+        display: inline-block;
+    }
+    .due {
+        width: 16%;
+        display: inline-block;
+    }
+	.curdue {
+        width: 15%;
+        display: inline-block;
+		text-align: right;
+    }
+    .metering{
+        float: left;
+        width: 300px;
+        display: inline-block;
+        margin-right: 30px;
+		font-size: 10px;
+    }
+	.metering .mtrdetails {
+		height: 45px;
+		display: inline-block;
+		font-size: 10px;
+		padding-top: 15px;
+		padding-left: 35px;
+		width: 100%;
+		float: left;
+	}
+	
+	.metering .readingdetails {
+		height: 40px;
+		display: inline-block;
+		font-size: 10px;
+		padding-top: 5px;
+		padding-left: 10px;
+		width: 100%;
+		float: left;
+		
+	}
+	.metering .presread {
+		width: 20%;
+		display: inline-block;
+		text-align: center;
+	}
+	.metering .prevread {
+		width: 20%;
+		display: inline-block;
+		text-align: center;
+	}
+	.metering .mult {
+		width: 10%;
+		display: inline-block;
+		text-align: center;
+	}
+	.metering .kwh {
+		width: 40%;
+		display: inline-block;
+		text-align: center;
+	}
+
+
+
+	.metering .mtrno {
+		width: 30%;
+		display: inline-block;
+		text-align: center;
+	}
+	.metering .serial {
+		width: 30%;
+		display: inline-block;
+		text-align: center;
+	}
+	.metering .rate {
+		width: 10%;
+		display: inline-block;
+		text-align: center;
+	}
+	.metering .load {
+		width: 30%;
+		display: inline-block;
+		text-align: center;
+	}
+    .charges{
+        float: right;
+        width: 400px;
+		min-height: 550px;
+        display: inline-block;
+		position: absolute;
+		top: 140px;
+		right: 70px !important;
+        background: #0a6aa1 !important;
+    }
+
+    .print-btn {
+        display: inline-block;
+        text-decoration: none;
+        float: left;
+        position: fixed;
+        top: 2px;
+        right: 2px;
+        z-index: 1000;
+    }
+
+
+    .billno {positiont: absolute; bottom: 0px; right: 0px; float: right;}
+    @media print {
+        footer {page-break-after: always !important;}
+        .print-hidden {display: none;}
+        .print-btn {display: none;}
+        .printing {display: inline !important; position: relative; float: left;}
+        .billno {positiont: absolute; bottom: 0px; right: 0px; float: right;}
+    }
+
+    @media all {
+        .page-break	{ display: none; }
+    }
+
+    @media print {
+        .page-break	{ display: block; page-break-before: always; }
+        .list, ol, ul, p {
+            break-inside: avoid;
+        }
+    }
+

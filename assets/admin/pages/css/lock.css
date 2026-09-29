@@ -1,0 +1,207 @@
+/***
+Lock Page
+***/
+body {
+    background-color: #ddd;
+    padding: 0;
+    margin: 0;
+}
+
+.outer {
+    display: table;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+.middle {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.inner {
+    margin-left: auto;
+    margin-right: auto;
+    width: 520px;
+}
+
+.page-lock-box {
+    width: 100%;
+}
+.page-lock {
+    -webkit-box-shadow: 0px 10px 40px #00;
+    -moz-box-shadow: 0px 10px 40px #000;
+    box-shadow: 0px 10px 40px #000;
+}
+
+.login-logo a{
+    position: fixed !important;
+    top: 100px;
+    width: 100%;
+    text-align: center;
+}
+
+.page-lock .page-body {
+    width: 100%;
+    padding: 20px;
+    padding-top: 40px;
+    background: rgba(255,255,255, 1) !important;
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+    -ms-border-radius: 7px;
+    -o-border-radius: 7px;
+    border-radius: 7px;
+}
+
+.page-lock .page-body:after,
+.page-lock .page-body:before {
+    display: table;
+    content: "";
+    line-height: 0;
+}
+
+.page-lock .page-body:after {
+    clear: both;
+}
+
+.page-lock-box .page-footer-custom {
+    margin-top: 10px;
+    text-align: center !important;
+    font-size: 12px;
+    color: #eaeaea;
+}
+
+.page-lock img.page-lock-img {
+    float: left;
+    width: 150px;
+    height: auto;
+    margin-left: 20px;
+}
+
+.page-lock .page-lock-info {
+    padding-left: 10px;
+    float: right;
+    width: 280px;
+}
+
+.page-lock .page-lock-info a {
+    color: #3e89c9 !important;
+}
+
+.page-lock .page-lock-info h1 {
+    margin-top: -5px;
+    font-weight: bold;
+    color: #fff;
+    font-size: 28px;
+    line-height: 32px;
+    margin-bottom: 5px;
+    color: #1adbd1;
+    text-shadow: rgba(0, 0, 0, 0.2) 0px 2px 5px;
+}
+
+.page-lock .page-lock-info .email {
+    color: #00bbb1;
+    display: block;
+    font-size: 14px;
+    line-height: 14px;
+    margin-bottom: 10px;
+
+}
+
+.page-lock .page-lock-info .locked {
+    color: #FF7E00;
+    font-size: 14px;
+    line-height: 14px;
+    font-style: normal;
+}
+
+.page-lock .page-lock-info form {
+    margin: 28px 0;
+}
+
+.page-lock .page-lock-info input {
+    background: #fff;
+}
+
+.page-lock .relogin {
+    margin-top: 10px;
+}
+
+.page-lock .relogin a {
+    color: #cc3304 !important;
+}
+.page-body {
+    position: relative;
+    overflow:  hidden;
+}
+.page-body * {
+    z-index: 2;
+}
+.page-body .fa.lock-backgroud {
+    font-size: 200px !important;
+    position: absolute;
+    top: 140px; left: 10px;
+    z-index: 1;
+    opacity: 0.2;
+    color: #FF7E00;
+    text-shadow: rgba(206, 135, 70, 0.8) 60px -15px 5px;
+}
+/*Responsive*/
+@media (max-width: 1366px) {
+    .login-logo a{
+        position: fixed !important;
+        top:20px;
+        width: 100%;
+        text-align: center;
+    }
+}
+@media (max-width: 768px) {
+    body {
+        overflow: hidden;
+        background: #fff;
+    }
+    .page-lock {
+        top: 10px;
+        width: 100%;
+        margin: 0px 0px;
+        margin-top: 50px;
+    }
+
+    .page-lock .page-body {
+        padding: 20px 10px;
+        text-align: center;
+        width: 100%;
+        margin: 0px 0px !important;
+    }
+
+    .page-lock img.page-lock-img {
+        float: none !important;
+        display: block;
+        margin: 0 auto;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .page-lock .page-lock-info {
+        float: none !important;
+        width: 260px;
+        margin: 0 auto;
+    }
+
+    .page-lock .page-lock-info input {
+        width: 200px !important;
+    }
+
+    .inner {
+        width: 100%;
+        maring: 0px 0px;
+    }
+
+    .login-logo a{
+        position: fixed !important;
+        top: 5px;
+        width: 100%;
+        text-align: center;
+    }
+
+}

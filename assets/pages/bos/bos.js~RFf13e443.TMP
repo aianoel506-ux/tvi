@@ -1,0 +1,150 @@
+var BOS = function() {
+	// INITIALIZE HIGHLIGHTS SEARCH IN TABLE
+	PECO.getHighlightsPlugin();
+	
+	var tbl_capex_main = $('#tbl_capex_main');
+	
+	var init_ccid_budget = function(btype){
+		$.ajax({
+			url: PECO.base_url()+'bos/getccidbudget',
+			type: 'POST',
+			dataType: 'json',
+			data: {'btype': btype},
+			beforeSend: function() {
+				$('#budget_row_main').html('Loading..');	
+			}
+		}).done(function(data) {
+			if(data.qry==true) {
+				$('#budget_row_main').html('');
+				for(i=0; i<data.ccidnum; i++) {
+					$('#budget_row_main').append('<div class="panel-heading">'+
+									'<a href="javascript:;" class="btn btn-xs btn-danger pull-right"><i class="fa fa-times"></i></a>'+
+                                    '<h4 class="panel-title"><a class="accordion-toggle" data-toggle="collapse" data-target="#collapse_'+i+'">'+
+									'<div class="row"><div class="col-md-4"><b>'+data.ccidlist[i].ccid+'</b> - '+data.ccidlist[i].ccname+'</a></div>'+
+									
+									'<div class="col-md-7">'+
+									'<span class="col-md-4">Prev. Budget: 0.00</span>'+
+									'<span class="col-md-4">Current Budget: 0.00</span>'+	
+									'<span class="col-md-4">Budget Count: 0.00</span>'+									
+									'</div'+
+									
+									'</div></a>'+
+									
+									'</h4>'+
+                                    '</div>'+
+                                    '<div id="collapse_'+i+'" class="panel-collapse collapse in table">'+
+                                    '<table id="tbl_budget_'+i+'" class="table table-condensed table-bordered table-striped table-hover tbl-sm sub">'+
+									'<thead><th></th><th><i class="fa fa-reorder"></i></th><th>Descriptions</th><th>Job Order #</th><th>Account Code</th><th>Budget Amount</th><th>Balance</th><th width="60px"></th></thead>'+
+									'</table>'+
+									
+                                    '</div>');
+					init_tbl_capex_main($('#tbl_budget_'+i));
+					
+					
+				}
+			} else {
+				$('#budget_row_main').html('<span class="alert alert-warning"><b>Empty: </b> There is no budget for this year yet!</span>');	
+			}
+		}).fail(function() {
+			PECO.phpError();
+		});
+		
+		
+	};
+	var init_tbl_capex_main = function (tbl) {
+		$.ajax({
+			url: PECO.base_url() + 'bos/trnbudgetcreation',
+			type: "POST",
+			dataType: 'json',
+			
+		}).done(function(data) {
+			tbl.dataTable().empty();
+			var dt = tbl.dataTable({
+				bDestroy: true,
+				bPaginate: false,
+				bFilter: false,
+				bInfo: false,
+				bStateSave: true,
+				bProcessing: true,
+				aaData: data['data'],
+				language: {
+				  "emptyTable": '<h5><i class="fa fa-search text-info"></i> No data found!</h5>'
+				},
+				aoColumns: [
+					{"data": "expand", sClass: 'withsub'},
+					{"data": "num"},
+					{"data": "desc"},
+					{"data": "num"},
+					{"data": "num"},
+					{"data": "num"},
+					{"data": "num"},
+					{"data": "control", sClass: 'details-control'},
+				],
+				"columnDefs": [
+					{"orderable": false, "targets": [-1, 0, 1]}
+				],
+				"order": [
+					[1, 'asc']
+				],
+				"lengthMenu": [
+					[5, 15, 20, -1],
+					[5, 15, 20, "All"] // change per page values here
+				],
+				fnRowCallback: function (nRow, data, iDisplayIndex, iDisplayIndexFull) {
+					//var this_index = this.fnGetPosition( nRow );
+					
+					$(nRow).after('<tr><td>This is a new tr</td></tr>');
+					
+				},
+				// set the initial value
+				pageLength: 10,
+				fnDrawCallback: function () {
+					console.log('Table drawn..');
+				}
+			});
+			
+		}).fail(function() {
+			PECO.phpError();
+		});
+	};
+	return {
+		capex: function() {
+			
+			init_ccid_budget(76);
+			//init_tbl_capex_main();
+			
+			$('body').on('click', '#btn-expand', function () {
+				console.log('details clicked!');
+				var this_ = $(this);
+				var thisTr = this_.closest('tr');
+				var thisTr_child = thisTr.children('td').length;
+				if (this_.hasClass('expanded') == false) {
+					var data_details = '';
+					data_details += '<table id="" class="table table-condensed table-hover tbl-sm sub">';
+					data_details += '<thead><th></th><th><i class="fa fa-reorder"></i></th><th>Item Code</th><th>Job Order #</th><th>Item Description</th><th>Qty</th><th>Unit</th><th>Unit Price</th><th>Total Price</th><th width="60px"></th></thead>';
+					data_details += '<tbody>';
+					for(var ii=1; ii<=10; ii++) {
+						data_details += '<tr><td class="withsub">'+ii+'</td><td>item 1</td><td>item 1</td><td>item 1</td><td>item 1</td><td>item 1</td><td>item 1</td><td>item 1</td><td>item 1</td><td>item 1</td></tr>';
+					}
+					data_details += '<tbody>';
+					data_details += '</table>';
+					data_details += '';
+
+					thisTr.after('<tr class="" id=""><td colspan="' + thisTr_child + ' style="padding: 0px 0px !important"><div class="panel-collapse collapse in table" style="padding-top: 0px !important; padding-bottom: 0px !important;; margin: 0px 0px !important">' + data_details + '</div></td></tr>');
+					this_.removeClass('fa-plus-square-o').addClass('fa-minus-square-o');
+                    thisTr.next('#loading').remove();
+                } else {
+                    thisTr.next('tr').remove();
+                    thisTr.next('#loading').remove();
+                    this_.removeClass('fa-minus-square-o').addClass('fa-plus-square-o');
+                }
+				this_.toggleClass('expanded');
+				thisTr.next('tr').find('table').dataTable({bDestroy: true,
+				bPaginate: false,
+				bFilter: false,
+				bInfo: false,});
+			});
+		}
+	};
+
+}();
